@@ -18,6 +18,14 @@ class ShopTransaction(Model):
     shop_id = columns.Integer(primary_key=True)
     name = columns.Text(static=True)
     type = columns.Text(static=True)
-    product_type = columns.Text(primary_key=True)  # Clustering key
+    #product_ids = columns.List(int)
+    #product_type = columns.Text(primary_key=True)  # Clustering key
     transaction_ts = columns.TimeUUID(primary_key=True, clustering_order='DESC')  # Clustering key
+    amount = columns.Float(required=True)
     currency = columns.Text()
+
+
+class UserAccount(Model):
+    user_id = columns.Integer(primary_key=True)
+    user_name = columns.Text(static=True)
+    amount_available = columns.Float(required=True, default=0)
