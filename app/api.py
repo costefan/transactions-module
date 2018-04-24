@@ -1,14 +1,11 @@
 import json
 
-from cassandra.cluster import Cluster
-from flask import Flask, request, make_response, jsonify
+from flask import request, make_response, jsonify
 
-from app.config.database import CASSANDRA_KEYSPACE
+from app.config.api_config import API_PORT
 from app.models import ShopTransaction, UserAccount
 from app import application
 
-
-cluster = Cluster()
 
 def _get_user(user_id):
     get_user_query = UserAccount.objects(user_id=int(user_id))
@@ -30,7 +27,8 @@ def create_transaction():
         ShopTransaction.create(user_id=user_id,
                                shop_id = data_dict['shop_id'],
                                name = data_dict['shop_name'],
-                               amount = data_dict['amount'])
+                               amount = data_dict.get('amount', 0),
+                               product_id = data_dict['product_id'])
     except Exception as e:
         return make_response(jsonify({'success': False, 'message': str(e)}), 505)
     return make_response(jsonify({'success': True, 'message': 'Transaction Was Successful'}), 200)
@@ -62,13 +60,13 @@ def refill_account():
     return make_response(jsonify({'success': True, 'message': 'Account Was Refilled'}), 200)
 
 
-@application.route('/shit/', methods=['GET'])
+@application.route('/alive/', methods=['GET'])
 def test():
-    return make_response(jsonify({'success': True, 'message': 'Account Was Refilled'}), 200)
+    return make_response(jsonify({'success': True, 'message': 'Alive'}), 200)
 
 
 def serve_api():
-    application.run(debug=True, port=5444)
+    application.run(debug=True, port=API_PORT)
 
 
 
