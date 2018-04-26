@@ -14,7 +14,7 @@ def _get_user(user_id):
 
 @application.route('/create_transaction/', methods=['POST'])
 def create_transaction():
-    data_dict = json.loads(request.data)
+    data_dict = json.loads(request.data.decode('utf-8'))
     user_id = data_dict['attendee_id']
     product_id = data_dict['product_id']
     shop_id = data_dict['shop_id']
@@ -37,7 +37,7 @@ def create_transaction():
 
 @application.route('/create_user/', methods=['POST'])
 def create_user():
-    data_dict = json.loads(request.data)
+    data_dict = json.loads(request.data.decode('utf-8'))
     user_id = data_dict['user_id']
     name = data_dict['user_name']
     initial_amount = float(data_dict.get('initial_amount', 0))
@@ -50,7 +50,7 @@ def create_user():
 
 @application.route('/refill_account', methods=['POST'])
 def refill_account():
-    data_dict = json.loads(request.data)
+    data_dict = json.loads(request.data.decode('utf-8'))
     user_id = data_dict['user_id']
     refill_amount = float(data_dict.get('amount', 0))
     current_balance = _get_user(user_id).get('amount_available', 0)
