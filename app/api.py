@@ -3,34 +3,35 @@ import json
 from flask import request, make_response, jsonify
 
 from app.config.api_config import API_PORT
-from app.models import ShopTransaction, UserAccount
+from app.models import ShopTransaction, UserAccount, UserAccTransaction
 from app import application
 
 
 def _get_user(user_id):
     get_user_query = UserAccount.objects(user_id=int(user_id))
-    return get_user_query[0] if get_user_query.count > 0 else None
+    return get_user_query[0] if get_user_query.count() > 0 else None
 
 
 @application.route('/create_transaction/', methods=['POST'])
 def create_transaction():
     data_dict = json.loads(request.data)
-    user_id = data_dict['user_id']
-    amount = data_dict['total_amount']
+    user_id = data_dict['attendee_id']
+    product_id = data_dict['product_id']
+    shop_id = data_dict['shop_id']
     user_obj = _get_user(user_id)
+    amount = data_dict.get('amount', 10)
     if not user_obj:
         return make_response(jsonify({'success': False, 'message': 'Not Existing UserId'}), 422)
     elif user_obj.amount_available < amount:
-        return make_response(jsonify({'success': False, 'message': 'Not Enough Money'}), 505)
+        return make_response(jsonify({'success': False, 'message': 'Not Enough Money'}), 400)
     try:
-        UserAccount.iff(user_id=user_id).update(amount_available=user_obj.amount_avaliable - amount)
-        ShopTransaction.create(user_id=user_id,
-                               shop_id = data_dict['shop_id'],
-                               name = data_dict['shop_name'],
-                               amount = data_dict.get('amount', 0),
-                               product_id = data_dict['product_id'])
+        UserAccount.filter(user_id=user_id).update(amount_available=user_obj.amount_available - amount)
+        UserAccTransaction.create(user_id=user_id,
+                               shop_id = shop_id,
+                               amount = amount,
+                               product_id = product_id)
     except Exception as e:
-        return make_response(jsonify({'success': False, 'message': str(e)}), 505)
+        return make_response(jsonify({'success': False, 'message': str(e)}), 400)
     return make_response(jsonify({'success': True, 'message': 'Transaction Was Successful'}), 200)
 
 
