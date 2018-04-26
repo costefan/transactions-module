@@ -18,4 +18,18 @@ curl -X POST \
   -H 'content-type: application/json' \
   -H 'postman-token: ab108467-ba96-48d2-757e-7b2686ad2c9d' \
   -d '{"attendee_id": 2, "product_id":2, "shop_id":3, "amount":20}'
+  
+Could responce with 200
+{
+    "message": "Transaction Was Successful",
+    "success": true
+}
+
+or 
+
+status_code 400
+{
+    "message": "Not Enough Money",
+    "success": false
+}
   ```
