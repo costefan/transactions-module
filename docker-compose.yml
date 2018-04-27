@@ -31,4 +31,6 @@ services:
     build: .
     ports:
       - "5444:5444"
-    command: python run_app.py
+    command:
+      /bin/bash -c "echo 'Waiting for cassandra nodes' && sleep 80 && /docker-entrypoint.sh cassandra -f"
+      python3.6 run_app.py

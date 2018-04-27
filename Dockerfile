@@ -18,7 +18,7 @@ WORKDIR /project
 # Installing all requirements
 ADD requirements.txt /project
 RUN curl https://bootstrap.pypa.io/get-pip.py | python3.6
-RUN python3.6 -m pip install -r requirements.txt
+RUN pip3 install -r requirements.txt
 # Expose port
 EXPOSE 5444
 ADD . /project
