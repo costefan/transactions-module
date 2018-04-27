@@ -32,4 +32,3 @@ services:
     ports:
       - "5444:5444"
     command: python run_app.py
-
