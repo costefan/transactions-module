@@ -10,11 +10,6 @@ services:
       - "7199:7199"
       - "9042:9042"
       - "9160:9160"
-    expose:
-      - 7000
-      - 7001
-      - 7199
-      - 9160
 
   cassandra-node-1:
     image: cassandra:3.11.0
@@ -31,3 +26,11 @@ services:
       - "CASSANDRA_SEEDS=cassandra-seed-node"
     depends_on:
       - "cassandra-seed"
+
+  webapi:
+    build: .
+    ports:
+      - "5444:5444"
+    command:
+      /bin/bash -c "echo 'Waiting for cassandra nodes' && sleep 80 && /docker-entrypoint.sh cassandra -f"
+      python3.6 run_app.py
